@@ -20,8 +20,7 @@ public class NotificationService {
     private final NotificationLogRepository logRepository;
     private final Map<Channel, NotificationSender> senders;
 
-    @Autowired
-    public NotificationService(UserRepository userRepository, MessageRepository messageRepository, NotificationLogRepository logRepository, SmsSender smsSender, EmailSender emailSender, PushSender pushSender) {
+    public NotificationService(UserRepository userRepository, MessageRepository messageRepository, NotificationLogRepository logRepository, NotificationSender smsSender, NotificationSender emailSender, NotificationSender pushSender) {
         this.userRepository = userRepository;
         this.messageRepository = messageRepository;
         this.logRepository = logRepository;

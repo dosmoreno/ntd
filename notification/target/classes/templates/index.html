@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Notification System</title>
+</head>
+<body>
+    <h1>Send Notification</h1>
+    <form th:action="@{/send}" method="post" th:object="${messageRequest}">
+        <label for="category">Category:</label>
+        <select id="category" th:field="*{category}">
+            <option th:each="cat : ${categories}" th:value="${cat}" th:text="${cat}"></option>
+        </select>
+        <br>
+        <label for="body">Message:</label>
+        <textarea id="body" th:field="*{body}" required></textarea>
+        <br>
+        <button type="submit">Send</button>
+    </form>
+    <p th:if="${error}" th:text="${error}" style="color:red;"></p>
+
+    <h2>Notification Logs</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Message ID</th>
+                <th>User ID</th>
+                <th>Channel</th>
+                <th>Timestamp</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="log : ${logs}">
+                <td th:text="${log.messageId}"></td>
+                <td th:text="${log.userId}"></td>
+                <td th:text="${log.channel}"></td>
+                <td th:text="${log.timestamp}"></td>
+                <td th:text="${log.status}"></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
