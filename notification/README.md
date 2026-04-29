@@ -1,6 +1,6 @@
 # Notification System
 
-This is a Java Spring Boot application for sending notifications to users based on categories and channels.
+This is a Java Spring Boot application for sending notifications to users based on categories and channels. 
 
 ## Features
 
