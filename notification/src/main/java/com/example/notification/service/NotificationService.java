@@ -5,7 +5,6 @@ import com.example.notification.model.*;
 import com.example.notification.repository.MessageRepository;
 import com.example.notification.repository.NotificationLogRepository;
 import com.example.notification.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
