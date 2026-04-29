@@ -5,7 +5,6 @@ import com.example.notification.model.Category;
 import com.example.notification.model.NotificationLog;
 import com.example.notification.repository.NotificationLogRepository;
 import com.example.notification.service.NotificationService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +19,6 @@ public class NotificationController {
     private final NotificationService notificationService;
     private final NotificationLogRepository logRepository;
 
-    @Autowired
     public NotificationController(NotificationService notificationService, NotificationLogRepository logRepository) {
         this.notificationService = notificationService;
         this.logRepository = logRepository;
