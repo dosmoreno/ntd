@@ -17,6 +17,7 @@
         <button type="submit">Send</button>
     </form>
     <p th:if="${error}" th:text="${error}" style="color:red;"></p>
+    <p th:if="${success}" th:text="${success}" style="color:green;"></p>
 
     <h2>Notification Logs</h2>
     <table>

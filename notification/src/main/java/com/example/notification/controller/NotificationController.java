@@ -48,6 +48,12 @@ public class NotificationController {
             return "index";
         }
         notificationService.sendNotification(messageRequest);
-        return "redirect:/";
+        model.addAttribute("messageRequest", new MessageRequest());
+        model.addAttribute("categories", Category.values());
+        List<NotificationLog> logs = logRepository.findAll();
+        logs.sort((a, b) -> b.getTimestamp().compareTo(a.getTimestamp()));
+        model.addAttribute("logs", logs);
+        model.addAttribute("success", "Message sent successfully");
+        return "index";
     }
 }
