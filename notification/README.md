@@ -41,6 +41,50 @@ The application will start on http://localhost:8080
 
 Uses H2 in-memory database. Data is seeded on startup.
 
-## Tests
+### H2 Console
 
-Run `mvn test` to execute unit tests.
+The H2 database console is enabled for development and testing.
+
+- URL: http://localhost:8080/h2-console
+- JDBC URL: jdbc:h2:mem:testdb
+- Username: sa
+- Password: password
+
+## Seeded Users
+
+The application seeds the following users on startup:
+
+- **John Doe**
+  - Email: john@example.com
+  - Phone: 123456789
+  - Subscribed Categories: SPORTS, FINANCE
+  - Channels: EMAIL, SMS
+
+- **Jane Smith**
+  - Email: jane@example.com
+  - Phone: 987654321
+  - Subscribed Categories: MOVIES
+  - Channels: PUSH
+
+## Usage
+
+- Go to http://localhost:8080
+- Select a category and enter a message
+- Click Send
+- View the logs below
+
+### Sample Output
+
+After sending a notification, the web interface displays:
+
+- A success message: "Message sent successfully"
+- A table of notification logs showing:
+  - Message ID
+  - Category
+  - User (human-readable name)
+  - Recipient (email/phone depending on channel)
+  - Channel
+  - Timestamp (formatted as yyyy-MM-dd HH:mm:ss)
+  - Status (SENT or FAILED)
+
+Screenshots of the interface can be viewed by running the application and navigating to the URL.

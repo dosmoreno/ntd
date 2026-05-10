@@ -24,7 +24,9 @@
         <thead>
             <tr>
                 <th>Message ID</th>
-                <th>User ID</th>
+                <th>Category</th>
+                <th>User</th>
+                <th>Recipient</th>
                 <th>Channel</th>
                 <th>Timestamp</th>
                 <th>Status</th>
@@ -33,9 +35,11 @@
         <tbody>
             <tr th:each="log : ${logs}">
                 <td th:text="${log.messageId}"></td>
-                <td th:text="${log.userId}"></td>
+                <td th:text="${log.category}"></td>
+                <td th:text="${log.userName != null ? log.userName : log.recipient}"></td>
+                <td th:text="${log.recipient}"></td>
                 <td th:text="${log.channel}"></td>
-                <td th:text="${log.timestamp}"></td>
+                <td th:text="${#temporals.format(log.timestamp, 'yyyy-MM-dd HH:mm:ss')}"></td>
                 <td th:text="${log.status}"></td>
             </tr>
         </tbody>

@@ -13,10 +13,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+import org.mockito.ArgumentCaptor;
 
 @ExtendWith(MockitoExtension.class)
 public class NotificationServiceTest {
@@ -43,7 +46,11 @@ public class NotificationServiceTest {
 
     @BeforeEach
     public void setUp() {
-        notificationService = new NotificationService(userRepository, messageRepository, logRepository, smsSender, emailSender, pushSender);
+        List<NotificationSender> senders = Arrays.asList(smsSender, emailSender, pushSender);
+        when(smsSender.getChannel()).thenReturn(Channel.SMS);
+        when(emailSender.getChannel()).thenReturn(Channel.EMAIL);
+        when(pushSender.getChannel()).thenReturn(Channel.PUSH);
+        notificationService = new NotificationService(userRepository, messageRepository, logRepository, senders);
     }
 
     @Test
@@ -139,6 +146,80 @@ public class NotificationServiceTest {
         // Assert
         verify(emailSender).send("john@example.com", "Test message");
         verify(logRepository).save(any(NotificationLog.class));
-        // Check that status is FAILED, but since it's saved, verify save is called
+
+        // Verify the log status is "FAILED"
+        ArgumentCaptor<NotificationLog> logCaptor = ArgumentCaptor.forClass(NotificationLog.class);
+        verify(logRepository).save(logCaptor.capture());
+        NotificationLog capturedLog = logCaptor.getValue();
+        assertEquals("FAILED", capturedLog.getStatus());
+    }
+
+    @Test
+    public void testSendNotification_EmptyUserList() {
+        // Arrange
+        MessageRequest request = new MessageRequest();
+        request.setCategory(Category.SPORTS);
+        request.setBody("Test message");
+
+        List<User> users = Collections.emptyList();
+
+        Message savedMessage = new Message();
+        savedMessage.setId(1L);
+
+        when(userRepository.findAll()).thenReturn(users);
+        when(messageRepository.save(any(Message.class))).thenReturn(savedMessage);
+
+        // Act
+        notificationService.sendNotification(request);
+
+        // Assert
+        verify(smsSender, never()).send(anyString(), anyString());
+        verify(emailSender, never()).send(anyString(), anyString());
+        verify(pushSender, never()).send(anyString(), anyString());
+        verify(logRepository, never()).save(any(NotificationLog.class));
+    }
+
+    @Test
+    public void testSendNotification_UserSubscribedButNoChannels() {
+        // Arrange
+        MessageRequest request = new MessageRequest();
+        request.setCategory(Category.SPORTS);
+        request.setBody("Test message");
+
+        User user = new User();
+        user.setId(1L);
+        user.setSubscribedCategories(Arrays.asList(Category.SPORTS));
+        user.setChannels(Collections.emptyList()); // No channels
+
+        List<User> users = Arrays.asList(user);
+
+        Message savedMessage = new Message();
+        savedMessage.setId(1L);
+
+        when(userRepository.findAll()).thenReturn(users);
+        when(messageRepository.save(any(Message.class))).thenReturn(savedMessage);
+
+        // Act
+        notificationService.sendNotification(request);
+
+        // Assert
+        verify(smsSender, never()).send(anyString(), anyString());
+        verify(emailSender, never()).send(anyString(), anyString());
+        verify(pushSender, never()).send(anyString(), anyString());
+        verify(logRepository, never()).save(any(NotificationLog.class));
+    }
+
+    @Test
+    public void testGetRecipient() {
+        // Arrange
+        User user = new User();
+        user.setName("John");
+        user.setEmail("john@example.com");
+        user.setPhone("123456789");
+
+        // Act & Assert
+        assertEquals("123456789", notificationService.getRecipient(user, Channel.SMS));
+        assertEquals("john@example.com", notificationService.getRecipient(user, Channel.EMAIL));
+        assertEquals("John", notificationService.getRecipient(user, Channel.PUSH));
     }
 }
